@@ -195,7 +195,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
       create_store
     end
     it "fails with no certificates in the store" do
-      expect(Chef::Log).to receive(:info).with("Certificate not found")
+      expect(Chef::Log).to receive(:info).with("Certificate not valid")
 
       resource.source = tests_thumbprint
       resource.run_action(:verify)
@@ -211,7 +211,10 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
 
       it "succeeds with a valid thumbprint" do
         expect(Chef::Log).to receive(:info).with("Certificate is valid")
-
+        require "pry"
+        binding.pry
+        resource.source = cer_path
+        resource.run_action(:create)
         resource.source = tests_thumbprint
         resource.run_action(:verify)
 
@@ -219,7 +222,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
       end
 
       it "fails with an invalid thumbprint" do
-        expect(Chef::Log).to receive(:info).with("Certificate not found")
+        expect(Chef::Log).to receive(:info).with("Certificate not valid")
 
         resource.source = others_thumbprint
         resource.run_action(:verify)
@@ -253,7 +256,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
       end
 
       it "fails with an invalid thumbprint" do
-        expect(Chef::Log).to receive(:info).with("Certificate not found")
+        expect(Chef::Log).to receive(:info).with("Certificate not valid")
 
         resource.source = others_thumbprint
         resource.run_action(:verify)
