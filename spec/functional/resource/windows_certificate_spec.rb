@@ -211,8 +211,8 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
 
       it "succeeds with a valid thumbprint" do
         expect(Chef::Log).to receive(:info).with("Certificate is valid")
-        require "pry"
-        binding.pry
+        # require "pry"
+        # binding.pry
         resource.source = cer_path
         resource.run_action(:create)
         resource.source = tests_thumbprint

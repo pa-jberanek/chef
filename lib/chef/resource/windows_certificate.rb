@@ -100,6 +100,8 @@ class Chef
 
         # PFX certificates contains private keys and we import them with some other approach
         # import_certificates(fetch_cert_object(ext), (ext == ".pfx"))
+        # require "pry"
+        # binding.pry
         import_certificates(fetch_cert_object_from_file(ext), (ext == ".pfx"))
       end
 
@@ -162,8 +164,6 @@ class Chef
       end
 
       action :verify, description: "Verifies a certificate and logs the result." do
-        require "pry"
-        binding.pry
         out = verify_cert
         if !!out == out
           out = out ? "Certificate is valid" : "Certificate not valid"
