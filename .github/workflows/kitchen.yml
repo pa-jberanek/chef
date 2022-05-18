@@ -72,12 +72,6 @@ jobs:
         If ($lastexitcode -ne 0) { Exit $lastexitcode }
         berks vendor cookbooks
         If ($lastexitcode -ne 0) { Exit $lastexitcode }
-
-
-        # totally trying something here - getting failures from badssl.com, what happens if I just cache the cert locally first?
-        knife ssl fetch https://self-signed.badssl.com
-
-
         chef-client -z -o end_to_end --chef-license accept-no-persist
 
   macos:
