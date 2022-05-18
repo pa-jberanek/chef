@@ -89,7 +89,9 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
 
   end
 
-  after { delete_store }
+  after do
+    delete_store
+  end
 
   describe "action: create" do
     it "starts with no certificates" do
@@ -211,10 +213,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
 
       it "succeeds with a valid thumbprint" do
         expect(Chef::Log).to receive(:info).with("Certificate is valid")
-        # require "pry"
-        # binding.pry
-        resource.source = cer_path
-        resource.run_action(:create)
+
         resource.source = tests_thumbprint
         resource.run_action(:verify)
 
@@ -268,11 +267,11 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
 
   describe "action: fetch" do
     context "with no certificate in the store" do
-      it "throws an error with no certificates in the store" do
-        expect(Chef::Log).not_to receive(:info)
+      it "logs a debug error with no certificates in the store" do
+        expect(Chef::Log).to receive(:debug).with("Certificate Not Found")
         resource.source = others_thumbprint
         resource.output_path = cert_output_path
-        expect { resource.run_action :fetch }.to raise_error(ArgumentError)
+        resource.run_action(:fetch)
       end
     end
 
@@ -291,7 +290,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
       end
 
       it "fails with an invalid thumbprint" do
-        expect(Chef::Log).not_to receive(:info)
+        expect(Chef::Log).to receive(:debug).with("Certificate Not Found")
 
         resource.source = others_thumbprint
 
@@ -299,7 +298,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
           path = File.join(dir, "test.pem")
 
           resource.output_path = path
-          expect { resource.run_action :fetch }.to raise_error(ArgumentError)
+          resource.run_action(:fetch)
         end
 
       end
@@ -343,9 +342,10 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
   end
 
   describe "action: delete" do
-    it "throws an argument error when attempting to delete a certificate that doesn't exist" do
+    it "logs an error when attempting to delete a certificate that doesn't exist" do
+      expect(Chef::Log).to receive(:debug).with("Certificate Not Found")
       resource.source = tests_thumbprint
-      expect { resource.run_action :delete }.to raise_error(ArgumentError)
+      resource.run_action(:delete)
     end
 
     it "deletes an existing certificate while leaving other certificates alone" do
@@ -363,7 +363,7 @@ describe Chef::Resource::WindowsCertificate, :windows_only do
       expect(certificate_count).to eq(1)
       expect(resource).to be_updated_by_last_action
 
-      expect { resource.run_action :delete }.to raise_error(ArgumentError)
+      expect { resource.run_action :delete }.not_to raise_error
       expect(certificate_count).to eq(1)
       expect(resource).not_to be_updated_by_last_action
 
