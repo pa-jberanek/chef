@@ -73,16 +73,6 @@ end
 # We then have to use this to take control of enough of the OS
 # to update git without actually hurting anything else. UGH
 
-# file "/usr/local/var/homebrew/locks/git@2.35.1.formula.lock" do
-#   mode "0777"
-#   owner "root"
-# end
-
-# file "/usr/local/Cellar/git@2.35.1/2.35.1/etc/bash_completion.d/git-completion.bash" do
-#   mode "0777"
-#   owner "root"
-# end
-
 execute "changing ownership of the git cask" do
   command "chmod -R 777 /usr/local/Cellar/git@2.35.1"
   live_stream true
