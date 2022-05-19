@@ -83,15 +83,15 @@ end
 #   owner "root"
 # end
 
-# execute "changing ownership of the git cask" do
-#   command "chmod -R 777 /usr/local/Cellar/git@2.35.1"
-#   live_stream true
-# end
+execute "changing ownership of the git cask" do
+  command "chmod -R 777 /usr/local/Cellar/git@2.35.1"
+  live_stream true
+end
 
-# execute "Sledge Hammer removal of the offending Git version" do
-#   command "rm -rf /usr/local/Cellar/git@2.35.1"
-#   live_stream true
-# end
+execute "Sledge Hammer removal of the offending Git version" do
+  command "rm -rf /usr/local/Cellar/git@2.35.1"
+  live_stream true
+end
 
 ### End MacOS nonsense
 # Now back to your regularly scheduled build, now in progress.
